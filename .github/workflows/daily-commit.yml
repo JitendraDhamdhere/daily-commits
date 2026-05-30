@@ -1,29 +1,36 @@
-name: Daily Commit
+name: Update Number
 
 on:
   schedule:
-    - cron: '0 6 * * *'   # Runs daily at 6:00 UTC
+    # Runs every day at 06:55 AM UTC (5:30 PM IST)
+    - cron: '30 7 * * *'
+    - cron: '30 14 * * *'
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
-  commit:
+  update_job:
     runs-on: ubuntu-latest
+    permissions:      # <-- ADD THIS BLOCK
+      contents: write # <-- TO GRANT WRITE PERMISSION
 
     steps:
-      - name: Checkout Repository
+      - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Update File
+      - name: Update the number
         run: |
-          echo "Last update: $(date)" > activity.txt
+          current_number=$(cat number.txt)
+          new_number=$((current_number + 1))
+          echo $new_number > number.txt
 
-      - name: Commit Changes
+      - name: Commit and push changes
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "jitendradhamdhere"
+          git config --global user.email "jitendradhamdhere333@gmail.com"
+          git add number.txt
+          git commit -m "Update number to $(cat number.txt)"
+          git push
+        
 
           git add .
           git commit -m "Daily contribution update $(date '+%Y-%m-%d')" || exit 0
