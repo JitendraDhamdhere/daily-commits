@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: true
 
       - name: Update Activity File
         run: |
@@ -22,10 +24,11 @@ jobs:
 
       - name: Commit and Push
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "jitendradhamdhere"
+          git config --local user.email "jitendradhamdhere333@gmail.com"
 
           git add activity.txt
           git commit -m "Daily contribution update $(date '+%Y-%m-%d')" || exit 0
-          git pull --rebase origin main
-          git push
+          
+          # Force push directly to HEAD to bypass any merge conflicts
+          git push origin HEAD:main --force
